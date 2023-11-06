@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>farm Owner Dashboard</title>
+    <meta charset="utf-8" />
+    <link type="text/css" rel="stylesheet" href="static/css/default.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> <!-- Include Chart.js plugin for data labels -->
+  </head>
+
+
+  <body>
+
+    <!-- Displaying Pyro Values -->
+    <div class="container">
+      <table class="table table-striped">
+
+        <thead> 
+          <tr>
+            <th>Pyro Temperature</th>
+            <th>Pyro Pressure</th>
+            <th>Pyro Flow-rate</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>AVG: {{avg_temp}} </td>
+            <td>AVG: {{avg_press}}</td>
+            <td>AVG: {{avg_flow}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- Displaying Hydro Values -->
+    <div class="container">
+      <table class="table table-striped">
+
+        <thead> 
+          <tr>
+            <th>hydrogen_pressure</th>
+            <th>hydrogen_production_rate</th>
+            <th>hydrogen_storage_capacity</th>
+            <th>hydrogen_temperature</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>AVG: {{avg_hydrogen_pressure}} </td>
+            <td>AVG: {{avg_hydrogen_production_rate}}</td>
+            <td>SUM: {{sum_hydrogen_storage_capacity}}</td>
+            <td>AVG: {{avg_hydrogen_temperature}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+
+<!-- Doughnut chart for green house -->
+<div class="container">
+  <canvas id="myDoughnutChart"></canvas>
+</div>
+
+
+<script>
+  // <block:setup:1>
+  const data = {
+    labels: [
+      'Temperature',
+      'Humidity',
+      'Light Intensity',
+      'CO2 Level',
+      'PAR',
+    ],
+    datasets: [{
+      label: 'Average Greenhouse Data',
+      data: [
+        {{ avg_greenhouse_temperature|default:"0" }},
+        {{ avg_greenhouse_humidity|default:"0" }},
+        {{ avg_greenhouse_light_intensity|default:"0" }},
+        {{ avg_greenhouse_co2_level|default:"0" }},
+        {{ avg_par|default:"0" }},
+      ],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+      ],
+      hoverOffset: 4,
+    }],
+  };
+  // </block:setup>
+
+  // <block:config:0>
+  const config = {
+    type: 'doughnut',
+    data: data,
+  };
+  // </block:config>
+
+  // Render the chart
+  var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+  new Chart(ctx, config);
+</script>
+
+
+
+
+ <div class="container">
+        <canvas id="lineChart"></canvas>
+    </div>
+
+    <script>
+      // Get the context of the canvas element
+      const ctx2 = document.getElementById('lineChart').getContext('2d');
+    
+      // Extract the data for daily_avg_temperatura_pannello, daily_avg_temperatura_ritorno, and daily_avg_temperatura_mandata
+      const dates = [
+        {% for item in daily_avg_temperatura_pannello %}
+          "{{ item.date|date:'Y-m-d' }}",
+        {% endfor %}
+      ];
+    
+      const avg_temperatura_pannello = [
+        {% for item in daily_avg_temperatura_pannello %}
+          {{ item.avg_temperatura_pannello|default:"0" }},
+        {% endfor %}
+      ];
+    
+      const avg_temperatura_ritorno = [
+        {% for item in daily_avg_temperatura_ritorno %}
+          {{ item.avg_temperatura_ritorno|default:"0" }},
+        {% endfor %}
+      ];
+    
+      const avg_temperatura_mandata = [
+        {% for item in daily_avg_temperatura_mandata %}
+          {{ item.avg_temperatura_mandata|default:"0" }},
+        {% endfor %}
+      ];
+    
+      // Create the line chart
+      const lineChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [
+            {
+              label: 'Temperatura Pannello',
+              data: avg_temperatura_pannello,
+              pointStyle: false,
+              borderColor: 'rgb(255, 99, 132)',
+              fill: true,
+            },
+            {
+              label: 'Temperatura Ritorno',
+              data: avg_temperatura_ritorno,
+              pointStyle: false,
+              borderColor: 'rgb(54, 162, 235)',
+              fill: true,
+            },
+            {
+              label: 'Temperatura Mandata',
+              data: avg_temperatura_mandata,
+              pointStyle: false,
+              borderColor: 'rgb(255, 205, 86)',
+              fill: true,
+            },
+          ],
+        },
+      }
+    );
+    </script>
+
+<div class="container">
+  <canvas id="barChart"></canvas>
+</div>
+
+<script>
+  // Get the context of the canvas element
+  const ctx3 = document.getElementById('barChart').getContext('2d');
+  
+  // Extract the data for year_avg_frequency and year_avg_total_active_power
+  const years = [
+    {% for item in year_avg_frequency %}
+      "{{ item.year }}",
+    {% endfor %}
+  ];
+
+  const avgFrequency = [
+    {% for item in year_avg_frequency %}
+      {{ item.avg_frequency|default:"0" }},
+    {% endfor %}
+  ];
+
+  const avgTotalActivePower = [
+    {% for item in year_avg_total_active_power %}
+      {{ item.avg_total_active_power|default:"0" }},
+    {% endfor %}
+  ];
+
+  // Create the bar chart
+  const barChart = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Average Frequency',
+          data: avgFrequency,
+          backgroundColor: 'rgb(75, 192, 192)',
+        },
+        {
+          label: 'Average Total Active Power',
+          data: avgTotalActivePower,
+          backgroundColor: 'rgb(153, 102, 255)',
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          beginAtZero: true,
+        },
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+</script>
+
+
+<div class="container">
+  <canvas id="solarDataBarChart"></canvas>
+</div>
+
+<script>
+  // Get the context of the canvas element
+  const ctx4 = document.getElementById('solarDataBarChart').getContext('2d');
+  
+  // Extract the data for year_avg_solar_energy_production and year_avg_solar_temperature
+  const solarYears = [
+    {% for item in year_avg_solar_energy_production %}
+      "{{ item.year }}",
+    {% endfor %}
+  ];
+
+  const avgSolarEnergyProduction = [
+    {% for item in year_avg_solar_energy_production %}
+      {{ item.avg_solar_energy_production|default:"0" }},
+    {% endfor %}
+  ];
+
+  const avgSolarTemperature = [
+    {% for item in year_avg_solar_temperature %}
+      {{ item.avg_solar_temperature|default:"0" }},
+    {% endfor %}
+  ];
+
+  // Create the bar chart for solar data
+  const solarDataBarChart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels: solarYears,
+      datasets: [
+        {
+          label: 'Average Solar Energy Production',
+          data: avgSolarEnergyProduction,
+          backgroundColor: 'rgb(75, 192, 192)',
+        },
+        {
+          label: 'Average Solar Temperature',
+          data: avgSolarTemperature,
+          backgroundColor: 'rgb(153, 102, 255)',
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          beginAtZero: true,
+        },
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+</script>
+
+    
+    
+  </body>
+</html>
