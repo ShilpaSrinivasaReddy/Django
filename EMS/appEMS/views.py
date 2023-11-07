@@ -79,10 +79,7 @@ def show(request):
     ).order_by('year')
 
 
-    print(year_avg_solar_energy_production)
-    print(year_avg_solar_temperature)
 
-   
     #print
     context={
         'pyro_data': pyro_data,
