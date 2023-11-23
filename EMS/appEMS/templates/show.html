@@ -17,7 +17,7 @@
     <!-- Include Chart.js plugin for data labels -->
 
     <style>
-      h1 {
+      h2 {
         display: inline-block;
         border: 2px solid #333;
         padding: 10px;
@@ -75,8 +75,8 @@
   </head>
 
   <body style="margin: 10px; padding: 0">
-    <div class="container" style="margin: 10px; padding: 0;">
-      <h1>Sensor Driven Production Analysis of Casel Volturno</h1>
+    <div class="container" style="margin: 10px; padding: 0">
+      <h2>Sensor Driven Production Analysis of Casel Volturno</h2>
       <div class="container">
         <div class="row">
           <!-- Division for Pyro Values -->
@@ -85,25 +85,23 @@
               <div class="pyro-button text-center">
                 <h5>Pyro Temperature</h5>
                 <button type="button" class="btn btn-primary btn-block">
-                  {{avg_temp}}
+                  {{ avg_temp|default:"0"|floatformat:2 }}
                 </button>
               </div>
               <div class="pyro-button text-center">
                 <h5>Pyro Pressure</h5>
                 <button type="button" class="btn btn-primary btn-block">
-                  {{avg_press}}
+                  {{ avg_press|default:"0"|floatformat:2 }}
                 </button>
               </div>
               <div class="pyro-button text-center">
                 <h5>Pyro Flow-rate</h5>
                 <button type="button" class="btn btn-primary btn-block">
-                  {{avg_flow}}
+                  {{ avg_flow|default:"0"|floatformat:2 }}
                 </button>
               </div>
             </div>
           </div>
-
-          
 
           <!-- Division for Doughnut Chart -->
           <div class="col-md-4">
@@ -183,7 +181,7 @@
               style="
                 border: 1px solid #333;
                 width: 450px;
-                height: 325px;
+                height: 323px;
                 padding: 10px;
               "
             >
@@ -271,53 +269,73 @@
 
       <div style="display: flex; justify-content: center; align-items: center">
         <!-- Displaying Hydro Values -->
-        <div class="container hydro-values" style="display: flex; margin-top: -10px; margin-bottom: 10px; margin-left: 100px;">
+        <div
+          class="container hydro-values"
+          style="
+            display: flex;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            margin-left: 100px;
+            border: 1px solid #333;
+            padding: 10px;
+          "
+        >
           <div
             class="average-value"
             style="
               background-color: rgba(255, 99, 132, 0.5);
-              width: 350px;
+              width: 600px;
               margin-right: 10px;
+              text-align: center;
             "
           >
-            <p>
-              Avg Hydrogen Pressure: {{avg_hydrogen_pressure|default:"N/A"}}
+            <p style="margin-bottom: 5px; font-size: 18px">
+              <strong
+                >{{ avg_hydrogen_pressure|default:"N/A"|floatformat:2 }}</strong
+              >
             </p>
+            <p style="font-size: 14px">Avg Hydrogen Pressure</p>
           </div>
           <div
             class="average-value"
             style="
               background-color: rgba(54, 162, 235, 0.5);
-              width: 350px;
+              width: 600px;
               margin-right: 10px;
+              text-align: center;
             "
           >
-            <p>
-              Avg Hydrogen Production Rate:
-              {{avg_hydrogen_production_rate|default:"N/A"}}
+            <p style="margin-bottom: 5px; font-size: 18px">
+              <strong>{{ avg_hydrogen_production_rate|default:"N/A"|floatformat:2}}</strong>
             </p>
+            <p style="font-size: 14px">Avg Hydrogen Production Rate</p>
           </div>
           <div
             class="average-value"
             style="
               background-color: rgba(255, 206, 86, 0.5);
-              width: 350px;
+              width: 600px;
               margin-right: 10px;
+              text-align: center;
             "
           >
-            <p>
-              Sum Hydrogen Storage Capacity:
-              {{sum_hydrogen_storage_capacity|default:"N/A"}}
+            <p style="margin-bottom: 5px; font-size: 18px">
+              <strong>{{ sum_hydrogen_storage_capacity|default:"N/A"|floatformat:2}}</strong>
             </p>
+            <p style="font-size: 14px">Sum Hydrogen Storage Capacity</p>
           </div>
           <div
             class="average-value"
-            style="background-color: rgba(75, 192, 192, 0.5); width: 350px"
+            style="
+              background-color: rgba(75, 192, 192, 0.5);
+              width: 600px;
+              text-align: center;
+            "
           >
-            <p>
-              Avg Hydrogen Temperature:
-              {{avg_hydrogen_temperature|default:"N/A"}}
+            <p style="margin-bottom: 5px; font-size: 18px">
+              <strong>{{ avg_hydrogen_temperature|default:"N/A"|floatformat:2}}</strong>
             </p>
+            <p style="font-size: 14px">Avg Hydrogen Temperature</p>
           </div>
         </div>
       </div>
@@ -331,7 +349,7 @@
               <canvas
                 id="solarDataBarChart"
                 width="450px"
-                height="320px"
+                height="280px"
               ></canvas>
             </div>
 
@@ -414,8 +432,8 @@
 
           <!-- Division for Photovoltaic Line Chart -->
           <div class="col-md-6">
-            <div class="container" style="margin-left: -110px;">
-              <canvas id="lineChart" width="750px" height="320px" ></canvas>
+            <div class="container" style="margin-left: -110px">
+              <canvas id="lineChart" width="750px" height="270x"></canvas>
             </div>
             <script>
               // Get the context of the canvas element
@@ -493,6 +511,5 @@
         </div>
       </div>
     </div>
-    <h1>the end</h1>
   </body>
 </html>
